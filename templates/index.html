@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Study Assistant</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #dbeafe);
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-text {
+            color: #64748b;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 35px;
+        }
+
+        .hero-icon {
+            font-size: 60px;
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            color: #172554;
+            margin: 15px 0;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 850px;
+            margin: 20px auto 50px;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(37,99,235,0.15);
+        }
+
+        .card h2 {
+            color: #172554;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #172554;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 18px;
+            border: 2px solid #dbeafe;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            background: white;
+            color: #334155;
+        }
+
+        select:focus {
+            border-color: #2563eb;
+        }
+
+        .question-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #dbeafe;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            padding: 16px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .answer-title {
+            margin-top: 30px;
+            color: #172554;
+        }
+
+        .answer-box {
+            margin-top: 12px;
+            padding: 20px;
+            min-height: 100px;
+            background: #eff6ff;
+            border-radius: 12px;
+            color: #334155;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .quick {
+            margin-top: 30px;
+        }
+
+        .quick h3 {
+            color: #172554;
+            margin-bottom: 15px;
+        }
+
+        .quick button {
+            background: #eef2ff;
+            color: #2563eb;
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .quick button:hover {
+            background: #dbeafe;
+        }
+
+        .feature-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #eef2ff;
+        }
+
+        .feature-section h3 {
+            color: #172554;
+            margin-bottom: 15px;
+        }
+
+        .feature-button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .summary-button {
+            background: #7c3aed;
+        }
+
+        .summary-button:hover {
+            background: #6d28d9;
+        }
+
+        .mcq-button {
+            background: #059669;
+        }
+
+        .mcq-button:hover {
+            background: #047857;
+        }
+
+        /* Chat History */
+
+        .history-section {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 2px solid #eef2ff;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-header h3 {
+            color: #172554;
+        }
+
+        .clear-button {
+            background: #ef4444;
+            padding: 9px 15px;
+            font-size: 13px;
+        }
+
+        .clear-button:hover {
+            background: #dc2626;
+        }
+
+        .history-box {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid #2563eb;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+        }
+
+        .history-subject {
+            font-size: 13px;
+            color: #2563eb;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .history-question {
+            font-weight: bold;
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .history-answer {
+            color: #475569;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .question-area {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .nav-text {
+                display: none;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🤖 AI Study Assistant</div>
+        <div class="nav-text">Smart • Simple • AI Powered</div>
+    </nav>
+
+    <section class="hero">
+
+        <div class="hero-icon">🎓</div>
+
+        <h1>
+            Learn Smarter with
+            <span>AI</span>
+        </h1>
+
+        <p>
+            Your personal AI study partner for questions, concepts and learning.
+        </p>
+
+    </section>
+
+
+    <div class="card">
+
+        <h2>💡 Ask Your Study Question</h2>
+
+        <label for="subject">📚 Select Subject</label>
+
+        <select id="subject">
+            <option value="General">General</option>
+            <option value="Python">Python</option>
+            <option value="DBMS">DBMS</option>
+            <option value="DSA">DSA</option>
+            <option value="Data Science">Data Science</option>
+            <option value="Artificial Intelligence">
+                Artificial Intelligence
+            </option>
+        </select>
+
+
+        <div class="question-area">
+
+            <input
+                type="text"
+                id="question"
+                placeholder="Example: What is Python?"
+            >
+
+            <button onclick="askQuestion()">
+                Ask AI 🤖
+            </button>
+
+        </div>
+
+
+        <h3 class="answer-title">
+            ✨ AI Answer
+        </h3>
+
+        <div class="answer-box" id="answer">
+            Your answer will appear here...
+        </div>
+
+
+        <div class="quick">
+
+            <h3>⚡ Quick Questions</h3>
+
+            <button onclick="setQuestion('What is Python?')">
+                🐍 Python
+            </button>
+
+            <button onclick="setQuestion('What is DBMS?')">
+                🗄️ DBMS
+            </button>
+
+            <button onclick="setQuestion('What is Data Science?')">
+                📊 Data Science
+            </button>
+
+            <button onclick="setQuestion('What is Artificial Intelligence?')">
+                🤖 AI
+            </button>
+
+        </div>
+
+
+        <div class="feature-section">
+
+            <h3>📚 Study Tools</h3>
+
+            <button
+                class="feature-button summary-button"
+                onclick="generateSummary()">
+                📝 Generate Study Summary
+            </button>
+
+            <button
+                class="feature-button mcq-button"
+                onclick="generateMCQ()">
+                ❓ Generate MCQs
+            </button>
+
+        </div>
+
+
+        <!-- Chat History -->
+
+        <div class="history-section">
+
+            <div class="history-header">
+
+                <h3>💬 Chat History</h3>
+
+                <button
+                    class="clear-button"
+                    onclick="clearHistory()">
+                    🗑️ Clear History
+                </button>
+
+            </div>
+
+            <div
+                class="history-box"
+                id="historyBox">
+
+                <div class="empty-history">
+                    No questions asked yet. Your chat history will appear here.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+        © 2026 AI Study Assistant • Powered by Gemini
+    </footer>
+
+
+    <script>
+
+        // -------------------------
+        // Quick Question
+        // -------------------------
+
+        function setQuestion(text) {
+
+            document.getElementById("question").value = text;
+
+        }
+
+
+        // -------------------------
+        // Save Chat History
+        // -------------------------
+
+        function saveHistory(question, subject, answer) {
+
+            let history =
+                JSON.parse(localStorage.getItem("studyHistory")) || [];
+
+            let item = {
+                question: question,
+                subject: subject,
+                answer: answer
+            };
+
+            history.unshift(item);
+
+            localStorage.setItem(
+                "studyHistory",
+                JSON.stringify(history)
+            );
+
+            displayHistory();
+        }
+
+
+        // -------------------------
+        // Display Chat History
+        // -------------------------
+
+        function displayHistory() {
+
+            let history =
+                JSON.parse(localStorage.getItem("studyHistory")) || [];
+
+            let historyBox =
+                document.getElementById("historyBox");
+
+            if (history.length === 0) {
+
+                historyBox.innerHTML = `
+                    <div class="empty-history">
+                        No questions asked yet.
+                        Your chat history will appear here.
+                    </div>
+                `;
+
+                return;
+            }
+
+            historyBox.innerHTML = "";
+
+            history.forEach(function(item) {
+
+                let div =
+                    document.createElement("div");
+
+                div.className = "history-item";
+
+                div.innerHTML = `
+                    <div class="history-subject">
+                        📚 ${item.subject}
+                    </div>
+
+                    <div class="history-question">
+                        ❓ ${item.question}
+                    </div>
+
+                    <div class="history-answer">
+                        ${item.answer}
+                    </div>
+                `;
+
+                historyBox.appendChild(div);
+
+            });
+        }
+
+
+        // -------------------------
+        // Clear History
+        // -------------------------
+
+        function clearHistory() {
+
+            localStorage.removeItem("studyHistory");
+
+            displayHistory();
+
+        }
+
+
+        // -------------------------
+        // Ask AI
+        // -------------------------
+
+        async function askQuestion() {
+
+            let question =
+                document.getElementById("question").value;
+
+            let subject =
+                document.getElementById("subject").value;
+
+            let answer =
+                document.getElementById("answer");
+
+
+            if (question.trim() === "") {
+
+                answer.innerText =
+                    "Please enter a question.";
+
+                return;
+            }
+
+
+            answer.innerText =
+                "Thinking... 🤖";
+
+
+            try {
+
+                let response =
+                    await fetch("/ask", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question: question,
+                            subject: subject
+                        })
+
+                    });
+
+
+                let data =
+                    await response.json();
+
+
+                answer.innerText =
+                    data.answer;
+
+
+                // Save successful answer
+                if (data.answer) {
+
+                    saveHistory(
+                        question,
+                        subject,
+                        data.answer
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                answer.innerText =
+                    "Something went wrong. Please try again.";
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        // -------------------------
+        // Generate Summary
+        // -------------------------
+
+        async function generateSummary() {
+
+            let question =
+                document.getElementById("question").value;
+
+            let subject =
+                document.getElementById("subject").value;
+
+            let answer =
+                document.getElementById("answer");
+
+
+            if (question.trim() === "") {
+
+                answer.innerText =
+                    "Please enter a topic or question first.";
+
+                return;
+            }
+
+
+            answer.innerText =
+                "Creating your study summary... 📚🤖";
+
+
+            try {
+
+                let response =
+                    await fetch("/summary", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question: question,
+                            subject: subject
+                        })
+
+                    });
+
+
+                let data =
+                    await response.json();
+
+
+                answer.innerText =
+                    data.answer;
+
+
+                if (data.answer) {
+
+                    saveHistory(
+                        "📝 Summary: " + question,
+                        subject,
+                        data.answer
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                answer.innerText =
+                    "Unable to generate summary. Please try again.";
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        // -------------------------
+        // Generate MCQ
+        // -------------------------
+
+        async function generateMCQ() {
+
+            let question =
+                document.getElementById("question").value;
+
+            let subject =
+                document.getElementById("subject").value;
+
+            let answer =
+                document.getElementById("answer");
+
+
+            if (question.trim() === "") {
+
+                answer.innerText =
+                    "Please enter a topic first.";
+
+                return;
+            }
+
+
+            answer.innerText =
+                "Generating MCQs... ❓🤖";
+
+
+            try {
+
+                let response =
+                    await fetch("/mcq", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question: question,
+                            subject: subject
+                        })
+
+                    });
+
+
+                let data =
+                    await response.json();
+
+
+                answer.innerText =
+                    data.answer;
+
+
+                if (data.answer) {
+
+                    saveHistory(
+                        "❓ MCQs: " + question,
+                        subject,
+                        data.answer
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                answer.innerText =
+                    "Unable to generate MCQs. Please try again.";
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        // -------------------------
+        // Load History on Page Open
+        // -------------------------
+
+        window.onload = function() {
+
+            displayHistory();
+
+        };
+
+    </script>
+
+</body>
+</html>
