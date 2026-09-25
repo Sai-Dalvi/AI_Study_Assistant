@@ -2,6 +2,14 @@
 
 An AI-powered web application that helps college students learn concepts, ask questions, generate study summaries, and practice with MCQs.
 
+## 📸 Project Preview
+
+![AI Study Assistant](screenshots/ai-study-assistant.png)
+
+### 📝 Study Summary
+
+![Study Summary](screenshots/study-summary.png)
+
 ## 🌟 Features
 
 - 🤖 **Ask AI** – Ask questions and get simple AI-generated explanations.

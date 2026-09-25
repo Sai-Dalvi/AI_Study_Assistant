@@ -14,6 +14,9 @@ client = genai.Client(
 )
 
 
+# -------------------------
+# Home Page
+# -------------------------
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -169,6 +172,7 @@ D) Option
 Correct Answer: clearly mention the correct option.
 
 Keep the questions educational, clear and suitable for exam preparation.
+
 Do not make them unnecessarily difficult.
 """
 
@@ -194,4 +198,4 @@ Do not make them unnecessarily difficult.
 # Run Application
 # -------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
